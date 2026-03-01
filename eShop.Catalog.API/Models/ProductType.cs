@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace eShop.Catalog.API.Data;
+namespace eShop.Catalog.API.Models;
 
 public class ProductType
 {
