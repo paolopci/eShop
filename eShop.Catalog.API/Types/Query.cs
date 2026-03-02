@@ -22,4 +22,18 @@ public class Query()
     // importante è l'ordinecon il quale li inseriamo si parte dall'alto verso il basso
     public IQueryable<Product> GetProductById(int id, CatalogContext context)
                     => context.Products.Where(p => p.Id == id);
+
+    [UsePaging]
+    [UseProjection]
+    public IQueryable<Product> GetProductsByType(int typeId, CatalogContext context)
+                    => context.Products
+                        .AsNoTracking()
+                        .Where(p => p.TypeId == typeId);
+
+    [UsePaging]
+    [UseProjection]
+    public IQueryable<Product> GetProductsByBrand(int brandId, CatalogContext context)
+                    => context.Products
+                        .AsNoTracking()
+                        .Where(p => p.BrandId == brandId);
 }
