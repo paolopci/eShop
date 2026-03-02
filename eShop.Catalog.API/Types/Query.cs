@@ -8,14 +8,15 @@ namespace eShop.Catalog.API.Types;
 public class Query()
 {
 
-    [UseProjection]
+    [UseProjection] // con questo attributo ho  inserito un middleware nella mia pipeline
     public IQueryable<Product> GetProducts(CatalogContext context)
     {
         return context.Products;
     }
 
-    [UseFirstOrDefault]
-    [UseProjection]
+    [UseFirstOrDefault]// con questo attributo ho  inserito un middleware nella mia pipeline
+    [UseProjection]// con questo attributo ho  inserito un middleware nella mia pipeline
+    // importante è l'ordinecon il quale li inseriamo si parte dall'alto verso il basso
     public IQueryable<Product> GetProductById(int id, CatalogContext context)
                     => context.Products.Where(p => p.Id == id);
 }
