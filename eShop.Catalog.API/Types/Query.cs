@@ -8,11 +8,14 @@ namespace eShop.Catalog.API.Types;
 public class Query()
 {
 
+    [UseProjection]
     public IQueryable<Product> GetProducts(CatalogContext context)
     {
         return context.Products;
     }
 
-    public async Task<Product?> GetProductById(int id, CatalogContext context)
-            => await context.Products.FirstOrDefaultAsync(p => p.Id == id);
+    [UseFirstOrDefault]
+    [UseProjection]
+    public IQueryable<Product> GetProductById(int id, CatalogContext context)
+                    => context.Products.Where(p => p.Id == id);
 }

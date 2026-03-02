@@ -14,7 +14,8 @@ builder.Services.AddScoped<CatalogContextSeed>();
 builder.Services.AddScoped<Query>();
 builder.Services
     .AddGraphQLServer()
-    .AddQueryType<Query>();
+    .AddQueryType<Query>()
+    .AddProjections();
 // .AddMutationType<Mutation>();
 
 
