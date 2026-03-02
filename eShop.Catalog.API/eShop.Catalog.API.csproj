@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.12" />
     <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="15.1.12" />
+    <PackageReference Include="HotChocolate.Data" Version="15.1.12" />
     <PackageReference Include="HotChocolate.Types.Analyzers" Version="15.1.12" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.13">
@@ -22,6 +23,7 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Data\EntityConfigurations\" />
+    <Folder Include="Types\" />
   </ItemGroup>
 
 </Project>
