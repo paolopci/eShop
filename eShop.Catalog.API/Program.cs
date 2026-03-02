@@ -1,5 +1,6 @@
 using eShop.Catalog.API.Data;
 using eShop.Catalog.API.Data.Migrations;
+using eShop.Catalog.API.Types;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +11,12 @@ var connectionString = builder.Configuration.GetConnectionString("CatalogDB")
 builder.Services.AddDbContext<CatalogContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddScoped<CatalogContextSeed>();
+builder.Services.AddScoped<Query>();
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType<Query>();
+// .AddMutationType<Mutation>();
 
-builder.Services.AddGraphQLServer();
 
 var app = builder.Build();
 

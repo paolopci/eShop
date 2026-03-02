@@ -123,4 +123,4 @@ Controlli MCP:
 - quando usi una nuova funzionalità di librerie o framework di terze parti, consulta sempre Context7 prima dell'implementazione.
 
 Stato UI client (dinamico):
-- vedi `docs/status-ui.md`.
+- se presente, vedi `docs/status-ui.md`.
