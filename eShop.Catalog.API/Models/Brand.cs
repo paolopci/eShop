@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using eShop.Catalog.API.Types;
+using eShop.Catalog.API.Types.Configuration;
 
 namespace eShop.Catalog.API.Models
 {

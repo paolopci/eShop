@@ -1,5 +1,5 @@
-using System;
-using HotChocolate.Data.Filters;
+
+using eShop.Catalog.API.Types.Filtering;
 using HotChocolate.Execution.Configuration;
 
 
@@ -10,7 +10,7 @@ public static class CustomRequestExecutorBuilderExtensions
     public static IRequestExecutorBuilder AddGraphQLConventions(this IRequestExecutorBuilder builder)
     {
         builder.AddProjections()
-        .AddFiltering(c => c.AddDefaults().BindRuntimeType<string, StringOperationFilterInputType>());
+        .AddFiltering(c => c.AddDefaults().BindRuntimeType<string, DefaultStringOperationFilterInputType>());
 
         return builder;
     }

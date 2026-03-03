@@ -24,7 +24,7 @@ builder.Services
     // rende disponibile la definizione di filtro personalizzata che hai scritto (campi e operazioni consentite);
     .AddType<ProductFilterInputType>()
 
-  .AddGraphQLConventions();
+    .AddGraphQLConventions();
 
 
 
