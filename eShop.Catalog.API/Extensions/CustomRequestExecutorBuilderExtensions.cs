@@ -10,9 +10,12 @@ public static class CustomRequestExecutorBuilderExtensions
     public static IRequestExecutorBuilder AddGraphQLConventions(this IRequestExecutorBuilder builder)
     {
         builder.AddProjections()
-        .AddFiltering(c => c.AddDefaults().BindRuntimeType<string, DefaultStringOperationFilterInputType>());
+        .AddFiltering(
+            c => c.AddDefaults()
+                  .BindRuntimeType<string, DefaultStringOperationFilterInputType>()
+            )
+            .AddSorting();
 
         return builder;
     }
-
 }

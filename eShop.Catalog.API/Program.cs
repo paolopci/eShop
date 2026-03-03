@@ -2,6 +2,7 @@ using eShop.Catalog.API.Data;
 using eShop.Catalog.API.Data.Migrations;
 using eShop.Catalog.API.Extensions;
 using eShop.Catalog.API.Types;
+using eShop.Catalog.API.Types.Sorting;
 using HotChocolate.Data.Filters;
 using HotChocolate.Types.Pagination;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ builder.Services
     .AddQueryType<Query>()
     // rende disponibile la definizione di filtro personalizzata che hai scritto (campi e operazioni consentite);
     .AddType<ProductFilterInputType>()
+    .AddType<ProductTypeSortInputType>()
 
     .AddGraphQLConventions();
 

@@ -15,10 +15,12 @@ public class Query()
     public IQueryable<Brand> GetBrands(CatalogContext context)
         => context.Brands;
 
+
     [UseFirstOrDefault]
     [UseProjection]
     public IQueryable<Brand> GetBrandById(int id, CatalogContext context)
-        => context.Brands.Where(t => t.Id == id);
+           => context.Brands.Where(t => t.Id == id);
+
 
     // se lascio questi setting in UsePaging questi sovrascrivono quelli che ho impostato in program.cs
     // con l'uso .ModifyPagingOptions(options => ....
@@ -26,8 +28,9 @@ public class Query()
     [UseProjection] // con questo attributo ho  inserito un middleware nella mia pipeline
     // abilita il filtro GraphQL (argomento where) sui campi di Product esposti dalla query
     [UseFiltering<ProductFilterInputType>] // rende disponibile la definizione di filtro personalizzata che hai scritto (campi e operazioni consentite);
+    [UseSorting]
     public IQueryable<Product> GetProducts(CatalogContext context)
-        => context.Products;
+           => context.Products;
 
     [UseFirstOrDefault]// con questo attributo ho  inserito un middleware nella mia pipeline
     [UseProjection]// con questo attributo ho  inserito un middleware nella mia pipeline
