@@ -2,6 +2,7 @@ using System;
 using eShop.Catalog.API.Data;
 using eShop.Catalog.API.Models;
 using HotChocolate.Data.Filters;
+using HotChocolate.Data.Sorting;
 using Microsoft.EntityFrameworkCore;
 
 namespace eShop.Catalog.API.Types;
@@ -29,8 +30,28 @@ public class Query()
     // abilita il filtro GraphQL (argomento where) sui campi di Product esposti dalla query
     [UseFiltering<ProductFilterInputType>] // rende disponibile la definizione di filtro personalizzata che hai scritto (campi e operazioni consentite);
     [UseSorting]
-    public IQueryable<Product> GetProducts(CatalogContext context)
-           => context.Products;
+    public IQueryable<Product> GetProducts(CatalogContext context, IFilterContext filterContext, ISortingContext sortingContext)
+    {
+        filterContext.Handled(false);
+        sortingContext.Handled(false);
+
+        IQueryable<Product> query = context.Products;
+
+        /*
+        Quindi: serve a definire un comportamento “di default” quando where e order non sono presenti nella richiesta GraphQL.
+        */
+
+        if (!filterContext.IsDefined)
+        {
+            query = query.Where(t => t.BrandId == 1);
+        }
+        if (!sortingContext.IsDefined)
+        {
+            query = query.OrderBy(t => t.Brand!.Name).ThenByDescending(t => t.Price);
+        }
+
+        return query;
+    }
 
     [UseFirstOrDefault]// con questo attributo ho  inserito un middleware nella mia pipeline
     [UseProjection]// con questo attributo ho  inserito un middleware nella mia pipeline
