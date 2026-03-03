@@ -9,6 +9,8 @@ public class Query()
 {
     [UsePaging(DefaultPageSize = 1, MaxPageSize = 10)]
     [UseProjection]
+    // abilita il filtro GraphQL (argomento where) sui campi di Brand esposti dalla query
+    [UseFiltering]
     public IQueryable<Brand> GetBrands(CatalogContext context)
         => context.Brands;
 
@@ -21,6 +23,8 @@ public class Query()
     // con l'uso .ModifyPagingOptions(options => ....
     [UsePaging(DefaultPageSize = 1, MaxPageSize = 11)]
     [UseProjection] // con questo attributo ho  inserito un middleware nella mia pipeline
+    // abilita il filtro GraphQL (argomento where) sui campi di Product esposti dalla query
+    [UseFiltering]
     public IQueryable<Product> GetProducts(CatalogContext context)
         => context.Products;
 
@@ -46,6 +50,8 @@ public class Query()
 
     [UsePaging]
     [UseProjection]
+    // abilita il filtro GraphQL (argomento where) sui campi di ProductType esposti dalla query
+    [UseFiltering]
     public IQueryable<ProductType> GetProductTypes(CatalogContext context)
         => context.ProductTypes;
 

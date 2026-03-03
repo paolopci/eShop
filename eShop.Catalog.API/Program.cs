@@ -1,6 +1,7 @@
 using eShop.Catalog.API.Data;
 using eShop.Catalog.API.Data.Migrations;
 using eShop.Catalog.API.Types;
+using HotChocolate.Data.Filters;
 using HotChocolate.Types.Pagination;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,9 +39,22 @@ builder.Services
         options.RequirePagingBoundaries = true;
     })
     // Abilita la proiezione dei campi GraphQL verso IQueryable/EF.
-    .AddProjections();
-// .AddMutationType<Mutation>();
-
+    .AddProjections()
+    .AddFiltering(
+            c =>
+            {
+                // Abilita la funzionalità “Filtering” di HotChocolate: cioè permette ai client di scrivere query del tipo:
+                /*
+                        query {
+                          products(where: { name: { startsWith: "A" } }) {
+                            nodes { id name }
+                            }
+                        }             
+                */
+                c.AddDefaults() //Registra le regole e i tipi di filtro “di default” per i tipi comuni (int, string, datetime, ecc.). Senza, dovresti configurare a mano molte cose.
+                .BindRuntimeType<string, CustomStringOperationFilterInputType>();
+            }
+    );
 
 var app = builder.Build();
 
@@ -59,3 +73,26 @@ using (var scope = app.Services.CreateScope())
 app.MapGraphQL();
 app.RunWithGraphQLCommands(args);
 app.Run();
+
+
+// In HotChocolate, quando abiliti i filtri (AddFiltering()), per i campi string viene esposto 
+// un “input type” GraphQL con una serie di operazioni standard, ad esempio:
+// eq (equals)
+// contains
+// startsWith
+// endsWith
+// in
+// ecc.
+// Con CustomStringOperationFilterInputType stai personalizzando le operazioni disponibili sulle stringhe.
+// uindi, di fatto, stai dicendo: “per le stringhe voglio esporre solo queste operazioni”.
+// Equals (eq)
+// StartsWith (startsWith)
+public class CustomStringOperationFilterInputType : StringOperationFilterInputType
+{
+    protected override void Configure(IFilterInputTypeDescriptor descriptor)
+    {
+        descriptor.Operation(DefaultFilterOperations.Equals).Type<StringType>();
+        descriptor.Operation(DefaultFilterOperations.StartsWith).Type<StringType>();
+
+    }
+}
