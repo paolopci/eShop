@@ -1,41 +1,47 @@
+using eShop.Catalog.API.Data;
+using eShop.Catalog.API.Data.Migrations;
+using eShop.Catalog.API.Extensions;
+using eShop.Catalog.API.Types;
+using HotChocolate.Data.Filters;
+using HotChocolate.Types.Pagination;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+var connectionString = builder.Configuration.GetConnectionString("CatalogDB")
+    ?? throw new InvalidOperationException("Connection string 'CatalogDB' non configurata.");
+
+builder.Services.AddDbContext<CatalogContext>(options =>
+    options.UseNpgsql(connectionString));
+builder.Services.AddScoped<CatalogContextSeed>();
+// Registra il tipo Query nel container DI con ciclo di vita scoped.
+builder.Services.AddScoped<Query>();
+builder.Services
+    // Inizializza la pipeline GraphQL di HotChocolate.
+    .AddGraphQLServer()
+    // Imposta il root Query type dello schema GraphQL.
+    .AddQueryType<Query>()
+    // rende disponibile la definizione di filtro personalizzata che hai scritto (campi e operazioni consentite);
+    .AddType<ProductFilterInputType>()
+
+    .AddGraphQLConventions();
+
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.MapOpenApi();
+    var context = scope.ServiceProvider.GetRequiredService<CatalogContext>();
+    await context.Database.MigrateAsync();
+
+    if (app.Environment.IsDevelopment())
+    {
+        var seeder = scope.ServiceProvider.GetRequiredService<CatalogContextSeed>();
+        await seeder.SeedAsync(context);
+    }
 }
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
+app.MapGraphQL();
+app.RunWithGraphQLCommands(args);
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
