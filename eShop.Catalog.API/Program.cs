@@ -20,6 +20,8 @@ builder.Services
     .AddGraphQLServer()
     // Imposta il root Query type dello schema GraphQL.
     .AddQueryType<Query>()
+    // rende disponibile la definizione di filtro personalizzata che hai scritto (campi e operazioni consentite);
+    .AddType<ProductFilterInputType>()
     // Configura le regole globali di paginazione per i campi che usano paging.
     .ModifyPagingOptions(options =>
     {

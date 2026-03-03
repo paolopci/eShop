@@ -1,6 +1,7 @@
 using System;
 using eShop.Catalog.API.Data;
 using eShop.Catalog.API.Models;
+using HotChocolate.Data.Filters;
 using Microsoft.EntityFrameworkCore;
 
 namespace eShop.Catalog.API.Types;
@@ -24,7 +25,7 @@ public class Query()
     [UsePaging(DefaultPageSize = 1, MaxPageSize = 11)]
     [UseProjection] // con questo attributo ho  inserito un middleware nella mia pipeline
     // abilita il filtro GraphQL (argomento where) sui campi di Product esposti dalla query
-    [UseFiltering]
+    [UseFiltering<ProductFilterInputType>] // rende disponibile la definizione di filtro personalizzata che hai scritto (campi e operazioni consentite);
     public IQueryable<Product> GetProducts(CatalogContext context)
         => context.Products;
 
@@ -60,3 +61,19 @@ public class Query()
     public IQueryable<ProductType> GetProductTypeById(int id, CatalogContext context)
         => context.ProductTypes.Where(t => t.Id == id);
 }
+
+
+public class ProductFilterInputType : FilterInputType<Product>
+{
+    protected override void Configure(IFilterInputTypeDescriptor<Product> descriptor)
+    {
+        descriptor.BindFieldsExplicitly();
+
+        descriptor.Field(t => t.Name);
+        descriptor.Field(t => t.Type);
+        descriptor.Field(t => t.Brand);
+        descriptor.Field(t => t.Price);
+        descriptor.Field(t => t.AvailableStock);
+    }
+}
+
